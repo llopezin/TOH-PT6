@@ -5,7 +5,12 @@ import { Hero } from './hero';
 import { HeroService } from './hero.service';
 import { MessageService } from './message.service';
 
-let httpClientSpy: { get: jasmine.Spy; post: jasmine.Spy; put: jasmine.Spy };
+let httpClientSpy: {
+  get: jasmine.Spy;
+  post: jasmine.Spy;
+  put: jasmine.Spy;
+  delete: jasmine.Spy;
+};
 let heroService: HeroService;
 const expectedHeroes: Hero[] = [
   { id: 1, name: 'A' },
@@ -13,7 +18,12 @@ const expectedHeroes: Hero[] = [
 ];
 
 beforeEach(() => {
-  httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'put']);
+  httpClientSpy = jasmine.createSpyObj('HttpClient', [
+    'get',
+    'post',
+    'put',
+    'delete',
+  ]);
   heroService = new HeroService(httpClientSpy as any, new MessageService());
 });
 
@@ -47,7 +57,7 @@ it('should return hero with given ID or undefined when not found', () => {
   expect(httpClientSpy.get.calls.count()).toBe(2, 'two calls');
 });
 
-it('should delete hero', () => {
+it('should update hero', () => {
   httpClientSpy.put.and.returnValue(of(expectedHeroes[0]));
 
   heroService
@@ -56,6 +66,40 @@ it('should delete hero', () => {
       (hero) => expect(hero).toEqual(expectedHeroes[0], 'created hero'),
       fail
     );
+  expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
+});
+
+it('should add hero', () => {
+  let newHero: Hero = { id: 3, name: 'C' };
+
+  httpClientSpy.post.and.returnValue(of(newHero));
+
+  heroService
+    .addHero(newHero)
+    .subscribe((hero) => expect(hero).toEqual(newHero, 'created hero'), fail);
+  expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+});
+
+it('should delete hero', () => {
+  httpClientSpy.delete.and.returnValue(of(expectedHeroes[0]));
+
+  heroService
+    .deleteHero(expectedHeroes[0])
+    .subscribe(
+      (hero) => expect(hero).toEqual(expectedHeroes[0], 'deleted hero'),
+      fail
+    );
+  expect(httpClientSpy.delete.calls.count()).toBe(1, 'one call');
+});
+
+it('should update hero', () => {
+  let hero: Hero = { id: 1, name: 'updated name' };
+
+  httpClientSpy.put.and.returnValue(of(hero));
+
+  heroService
+    .updateHero(hero)
+    .subscribe((hero) => expect(hero).toEqual(hero, 'updated hero'), fail);
   expect(httpClientSpy.put.calls.count()).toBe(1, 'one call');
 });
 
