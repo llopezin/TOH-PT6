@@ -14,7 +14,6 @@ import { HeroDetailComponent } from './hero-detail/hero-detail.component';
 import { HeroesComponent } from './heroes/heroes.component';
 import { HeroSearchComponent } from './hero-search/hero-search.component';
 import { MessagesComponent } from './messages/messages.component';
-import { TestComponent } from './test/test.component';
 
 @NgModule({
   imports: [
@@ -26,9 +25,9 @@ import { TestComponent } from './test/test.component';
     // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
     // and returns simulated server responses.
     // Remove it when a real server is ready to receive requests.
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, { dataEncapsulation: false }
-    )
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
+      dataEncapsulation: false,
+    }),
   ],
   declarations: [
     AppComponent,
@@ -37,8 +36,7 @@ import { TestComponent } from './test/test.component';
     HeroDetailComponent,
     MessagesComponent,
     HeroSearchComponent,
-    TestComponent
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
